@@ -26,6 +26,7 @@ requirements:
   build:
     - gcc_bootstrap_{{ target_platform }}
     - make
+    - texinfo
   host:
   run:
 
