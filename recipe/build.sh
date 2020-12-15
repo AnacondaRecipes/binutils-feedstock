@@ -10,18 +10,26 @@ set -e
 #    ln -sf "${fn}" "${new_fn}"
 #    varname=$(basename "${new_fn}" | tr a-z A-Z | sed "s/+/X/g" | sed "s/\./_/g" | sed "s/-/_/g")
 #    echo "$varname $CC"
-#    printf -v "$varname" "$BUILD_PREFIX/bin/${new_fn}"       
+#    printf -v "$varname" "$BUILD_PREFIX/bin/${new_fn}"
 #  done
 #popd
 
-for file in ./crosstool_ng/packages/binutils/$PKG_VERSION/*.patch; do
+for file in ./crosstool_ng/packages/binutils/${PKG_VERSION}/*.patch; do
   patch -p1 < $file;
 done
 
 mkdir build
 cd build
 
-export HOST="${ctng_cpu_arch}-${ctng_vendor}-linux-gnu"
+if [[ "$target_platform" == "osx-64" ]]; then
+  export CPPFLAGS="$CPPFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+  export CFLAGS="$CFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+  export CXXFLAGS="$CXXFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
+  export LDFLAGS="$LDFLAGS -Wl,-pie -Wl,-headerpad_max_install_names -Wl,-dead_strip_dylibs"
+fi
+export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
+
+export HOST="${ctng_cpu_arch}-conda-linux-gnu"
 
 ../configure \
   --prefix="$PREFIX" \

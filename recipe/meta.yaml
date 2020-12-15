@@ -1,6 +1,7 @@
 {% set name = "binutils" %}
-{% set version = "2.33.1" %}
+{% set version = "2.35" %}
 {% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor ~ "-linux-gnu-" %}
+{% set build_num = 9 %}
 
 package:
   name: binutils_split
@@ -8,70 +9,60 @@ package:
 
 source:
   - url: https://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-    sha256: 0cb4843da15a65a953907c96bad658283f3c4419d6bcc56bf2789db16306adb2
+    sha256: 7d24660f87093670738e58bcc7b7b06f121c0fcb0ca8fc44368d675a5ef9cff7
     folder: .
 
   # Get the patches from crosstool-ng
-  # Using https://github.com/crosstool-ng/crosstool-ng/pull/1268
-  - url: https://github.com/isuruf/crosstool-ng/archive/931b37a4056fff186052c0e893a6682ab37e7035.tar.gz
-    sha256: b855a87957077c590f5d34754bee04b3a1154202f7823504c88db9eea61f4817
+  - url: https://github.com/crosstool-ng/crosstool-ng/archive/e7da850fa2066c9f1adeba3d8525a7231d0e47bc.tar.gz
+    sha256: ba84dea3109b3fc1d8f7f12ffeade97ba58f62c628b61251db13cf918f55256b
     folder: crosstool_ng
 
 build:
-  number: 7
-  skip: True  # [not linux]
-  detect_binary_files_with_prefix: False
+  number: {{ build_num }}
+  skip: true  # [win]
+  detect_binary_files_with_prefix: false
 
 requirements:
   build:
-    - gcc_bootstrap_{{ target_platform }}
-    - make
-    - texinfo
   host:
   run:
 
 outputs:
-  - name: ld_impl_{{ target_platform }}
+  - name: ld_impl_{{ ctng_target_platform }}
     script: install_ld.sh
     build:
-      merge_build_host: False
-      detect_binary_files_with_prefix: False
+      merge_build_host: false
+      detect_binary_files_with_prefix: false
     requirements:
       build:
-        - gcc_bootstrap_{{ target_platform }}
-        - make
       host:
       run:
+      run_constrained:
+        - binutils_impl_{{ ctng_target_platform }} {{ version }}
     test:
       commands:
         - {{ chost }}ld --help
+        - echo "{{ ctng_vendor }}"
+        - echo {{ c_compiler_version }}
 
-  - name: binutils_impl_{{ target_platform }}
+  - name: binutils_impl_{{ ctng_target_platform }}
     script: install_binutils.sh
     build:
-      merge_build_host: False
-      detect_binary_files_with_prefix: False
+      merge_build_host: false
+      detect_binary_files_with_prefix: false
+      ignore_run_exports:
+        - __glibc
     requirements:
       build:
-        - gcc_bootstrap_{{ target_platform }}
-        - make
       host:
-        - ld_impl_{{ target_platform }}
-        - libstdcxx-ng >={{ cxx_compiler_version }}
-        - libgcc-ng >={{ c_compiler_version }}
+        - ld_impl_{{ ctng_target_platform }} {{ version }}
       run:
-        - {{ pin_subpackage("ld_impl_" ~ target_platform, exact=True) }}
-        - libstdcxx-ng >={{ cxx_compiler_version }}
-        - libgcc-ng >={{ c_compiler_version }}
+        - {{ pin_subpackage("ld_impl_" ~ ctng_target_platform, exact=True) }}
+        - sysroot_{{ ctng_target_platform }}
     test:
-      requires:
-        - gfortran_impl_{{ target_platform }}
-        - gxx_impl_{{ target_platform }}
-        - gcc_impl_{{ target_platform }}
-        - cmake
-        - make
-      files:
-        - tests
+      downstreams:
+        - gfortran_impl_{{ ctng_target_platform }}
+        - gcc_impl_{{ ctng_target_platform }}
       commands:
         - {{ chost }}addr2line --help
         - {{ chost }}ar --help
@@ -90,26 +81,21 @@ outputs:
         - {{ chost }}size --help
         - {{ chost }}strings --help
         - {{ chost }}strip --help
-        - export CC={{ chost }}gcc
-        - export CXX={{ chost }}g++
-        - export FC={{ chost }}gfortran
-        - ${CC} -Wall tests/aligned_alloc.c -o c_aligned -v
-        - ./c_aligned
-        - cd tests/fortomp && cmake .
+        - echo {{ c_compiler_version }}
 
   - name: binutils
     script: install_binutils_symlinks.sh
     build:
-      merge_build_host: False
-      detect_binary_files_with_prefix: False
+      merge_build_host: false
+      detect_binary_files_with_prefix: false
+      skip: true  # [ctng_target_platform != target_platform]
     requirements:
       build:
-        - gcc_bootstrap_{{ target_platform }}
-        - make
       host:
-        - binutils_impl_{{ target_platform }}
+        - binutils_impl_{{ ctng_target_platform }}
       run:
-        - {{ pin_subpackage("binutils_impl_" ~ target_platform, max_pin="x.x.x") }}
+        - {{ pin_subpackage("binutils_impl_" ~ ctng_target_platform, max_pin="x.x.x") }}
+        - libcxx >=4.0.0  # [osx]
     test:
       commands:
         - $PREFIX/bin/addr2line --help
@@ -133,15 +119,19 @@ outputs:
 
 about:
   home: https://www.gnu.org/software/binutils/
-  license: GPL 3
+  license: GPL-3.0-only
   license_file:
     - COPYING
     - COPYING.LIB
     - COPYING3
     - COPYING3.LIB
-  summary: A set of programming tools for creating and managing binary programs, object files, libraries, profile data, and assembly source code.
+  summary: |
+    A set of programming tools for creating and managing binary programs, object files,
+    libraries, profile data, and assembly source code.
 
 extra:
   recipe-maintainers:
     - frol
     - isuruf
+    - jjhelmus
+    - beckermr
