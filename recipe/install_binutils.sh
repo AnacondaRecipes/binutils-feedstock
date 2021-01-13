@@ -10,7 +10,7 @@ export OLD_HOST="${ctng_cpu_arch}-${ctng_vendor}-linux-gnu"
 mkdir -p $PREFIX/$OLD_HOST/bin
 # Remove hardlinks and replace them by softlinks
 for tool in addr2line ar as c++filt dwp elfedit gprof ld.bfd ld.gold nm objcopy objdump ranlib readelf size strings strip; do
-  rm -rf $PREFIX/$HOST/bin/$tool
+  rm -rf $PREFIX/$HOST/bin/$tool || true
   ln -s $PREFIX/bin/$HOST-$tool $PREFIX/$HOST/bin/$tool || true;
   ln -s $PREFIX/bin/$HOST-$tool $PREFIX/$OLD_HOST/bin/$tool || true;
   ln -s $PREFIX/bin/$HOST-$tool $PREFIX/bin/$OLD_HOST-$tool || true;

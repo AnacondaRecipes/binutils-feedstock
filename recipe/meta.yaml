@@ -72,7 +72,7 @@ outputs:
         - {{ chost }}gprof --help
         - {{ chost }}ld --help
         - {{ chost }}ld.bfd --help
-        - {{ chost }}ld.gold --help
+        - {{ chost }}ld.gold --help     # [not s390x]
         - {{ chost }}nm --help
         - {{ chost }}objcopy --help
         - {{ chost }}objdump --help
@@ -103,11 +103,11 @@ outputs:
         - $PREFIX/bin/as --help
         - $PREFIX/bin/c++filt --help
         - $PREFIX/bin/elfedit --help
-        - $PREFIX/bin/gold --help
+        - $PREFIX/bin/gold --help       # [not s390x]
         - $PREFIX/bin/gprof --help
         - $PREFIX/bin/ld --help
         - $PREFIX/bin/ld.bfd --help
-        - $PREFIX/bin/ld.gold --help
+        - $PREFIX/bin/ld.gold --help    # [not s390x]
         - $PREFIX/bin/nm --help
         - $PREFIX/bin/objcopy --help
         - $PREFIX/bin/objdump --help
