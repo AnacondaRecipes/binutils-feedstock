@@ -1,5 +1,5 @@
 {% set name = "binutils" %}
-{% set version = "2.35" %}
+{% set version = "2.36.1" %}
 {% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor ~ "-linux-gnu-" %}
 {% set build_num = 9 %}
 
@@ -9,8 +9,18 @@ package:
 
 source:
   - url: https://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-    sha256: 7d24660f87093670738e58bcc7b7b06f121c0fcb0ca8fc44368d675a5ef9cff7
+    sha256: 5b4bd2e79e30ce8db0abd76dd2c2eae14a94ce212cfc59d3c37d23e24bc6d7a3 
     folder: .
+    patches:
+      - patches/0000-sh-conf.patch
+      - patches/0001-ld_makefile_patch.patch
+      - patches/0002-check_ldrunpath_length.patch
+      - patches/0003-MinGW-w64-winpthreads-doesnt-have-pthread_mutexattr_settype.patch
+      - patches/0004-Dont-link-to-libfl-as-its-unnecessary.patch
+      - patches/0005-Darwin-gold-binary-cc-include-string-not-cstring.patch
+      - patches/0006-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
+      - patches/0007-sysroot.patch
+      - patches/0008-poison-system-directories.patch
 
   # Get the patches from crosstool-ng
   - url: https://github.com/crosstool-ng/crosstool-ng/archive/e7da850fa2066c9f1adeba3d8525a7231d0e47bc.tar.gz

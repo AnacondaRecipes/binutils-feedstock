@@ -14,9 +14,11 @@ set -e
 #  done
 #popd
 
-for file in ./crosstool_ng/packages/binutils/${PKG_VERSION}/*.patch; do
-  patch -p1 < $file;
-done
+# 2/18/2021 PJY: For v2.36.1, applying crosstool-ng patches in the meta.yaml (8 total).
+# Obtained patches from here: https://github.com/crosstool-ng/crosstool-ng/tree/master/packages/binutils/2.36.1 
+#for file in ./crosstool_ng/packages/binutils/${PKG_VERSION}/*.patch; do
+#  patch -p1 < $file;
+#done
 
 mkdir build
 cd build
