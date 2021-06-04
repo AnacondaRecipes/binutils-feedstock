@@ -2,7 +2,6 @@
 
 set -e
 
-
 #pushd ${BUILD_PREFIX}/bin
 #  for fn in "${BUILD}-"*; do
 #    new_fn=${fn//${BUILD}-/}
@@ -14,7 +13,9 @@ set -e
 #  done
 #popd
 
-for file in ./crosstool_ng/packages/binutils/${PKG_VERSION}/*.patch; do
+# make sure version is just major-minor
+CTNG_VER=$(echo ${PKG_VERSION} | sed -nE 's/([0-9]+\.[0-9]+).*/\1/p')
+for file in ./crosstool_ng/packages/binutils/${CTNG_VER}/*.patch; do
   patch -p1 < $file;
 done
 

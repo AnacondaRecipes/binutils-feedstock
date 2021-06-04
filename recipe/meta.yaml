@@ -1,5 +1,5 @@
 {% set name = "binutils" %}
-{% set version = "2.35" %}
+{% set version = "2.35.1" %}
 {% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor ~ "-linux-gnu-" %}
 {% set build_num = 9 %}
 
@@ -9,7 +9,7 @@ package:
 
 source:
   - url: https://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-    sha256: 7d24660f87093670738e58bcc7b7b06f121c0fcb0ca8fc44368d675a5ef9cff7
+    sha256: 320e7a1d0f46fcd9f413f1046e216cbe23bb2bce6deb6c6a63304425e48b1942
     folder: .
 
   # Get the patches from crosstool-ng
