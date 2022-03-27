@@ -23,7 +23,8 @@ source:
 
 build:
   number: 0
-  skip: true  # [not (linux or osx)]
+  # binutils support on osx is not fully implemented
+  skip: true  # [not linux]
   detect_binary_files_with_prefix: false
 
 requirements:
