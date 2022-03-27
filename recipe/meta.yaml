@@ -46,7 +46,7 @@ requirements:
     - flex
     - bison
     - ncurses
-
+    - patch  # [unix]
 outputs:
   - name: ld_impl_{{ ctng_target_platform }}
     script: install_ld.sh
