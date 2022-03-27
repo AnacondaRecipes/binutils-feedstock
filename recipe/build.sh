@@ -2,7 +2,7 @@
 
 echo "build binutils ..."
 
-if [[ $target_platform" == osx-* ]]; then
+if [[ $target_platform == osx-* ]]; then
   export CPPFLAGS="$CPPFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
   export CFLAGS="$CFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
   export CXXFLAGS="$CXXFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
