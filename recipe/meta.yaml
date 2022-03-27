@@ -86,9 +86,6 @@ outputs:
         - {{ pin_subpackage("ld_impl_" ~ ctng_target_platform, exact=True) }}
         - sysroot_{{ ctng_target_platform }}  # [linux]
     test:
-      downstreams:
-        - gfortran_impl_{{ ctng_target_platform }}  # [not osx]
-        - gcc_impl_{{ ctng_target_platform }}       # [not osx]
       commands:
         - {{ chost }}addr2line --help
         - {{ chost }}ar --help
