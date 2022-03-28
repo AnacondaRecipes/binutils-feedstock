@@ -12,11 +12,19 @@ if [[ $target_platform == osx-* ]]; then
 fi
 export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
 
+export CHOST="${ctng_triplet}"
+export OHOST="${ctng_triplet_old}"
+
+# on ppc we still use old sysroot ... therefore go with old name
+SHOST=$CHOST
+if [[ $target_platform == linux-ppc64le ]]; then
+  SHOST="${OHOST}"
+fi
+
 DEFSYSROOT=""
 if [[ $target_platform == linux-* ]]; then
-  DEFSYSROOT="--with-sysroot=$PREFIX/$HOST/sysroot"
+  DEFSYSROOT="--with-sysroot=$PREFIX/$OHOST/sysroot"
 fi
-## on linux --with-sysroot=$PREFIX/$HOST/sysroot
 
 mkdir -p build
 cd build
@@ -24,7 +32,7 @@ cd build
   --enable-interwork --enable-ld=yes --enable-gold=yes --enable-plugins --disable-multilib \
   --disable-sim --disable-gdb --disable-nls --disable-werror --enable-default-pie \
   --enable-deterministic-archives --enable-64-bit-bfd \
-  --target=$HOST ${DEFSYSROOT}
+  --target=$CHOST ${DEFSYSROOT}
 
 make
 
