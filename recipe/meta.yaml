@@ -11,15 +11,15 @@ source:
     sha256: {{ sha256 }}
     folder: binutils
     patches:
-      - 0000-sh-conf.patch
-      - 0001-check_ldrunpath_length.patch
-      - 0002-MinGW-w64-winpthreads-doesnt-have-pthread_mutexattr_settype.patch
-      - 0003-Dont-link-to-libfl-as-its-unnecessary.patch
-      - 0004-Darwin-gold-binary-cc-include-string-not-cstring.patch
-      - 0005-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
-      - 0006-sysroot.patch
-      - 0007-poison-system-directories.patch
-      - 0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
+      - patches/binutils/0000-sh-conf.patch
+      - patches/binutils/0001-check_ldrunpath_length.patch
+      - patches/binutils/0002-MinGW-w64-winpthreads-doesnt-have-pthread_mutexattr_settype.patch
+      - patches/binutils/0003-Dont-link-to-libfl-as-its-unnecessary.patch
+      - patches/binutils/0004-Darwin-gold-binary-cc-include-string-not-cstring.patch
+      - patches/binutils/0005-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
+      - patches/binutils/0006-sysroot.patch
+      - patches/binutils/0007-poison-system-directories.patch
+      - patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
 
 build:
   number: 0
@@ -80,7 +80,6 @@ outputs:
         - '*'
     requirements:
       build:
-        # - {{ compiler('c') }}
       host:
         - ld_impl_{{ ctng_target_platform }} {{ version }}
       run:
@@ -117,7 +116,6 @@ outputs:
 
     requirements:
       build:
-        # - {{ compiler('c') }}
       host:
         - binutils_impl_{{ ctng_target_platform }}
       run:
