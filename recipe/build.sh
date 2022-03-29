@@ -23,7 +23,7 @@ fi
 
 DEFSYSROOT=""
 if [[ $target_platform == linux-* ]]; then
-  DEFSYSROOT="--with-sysroot=$PREFIX/$OHOST/sysroot"
+  DEFSYSROOT="--with-sysroot=$PREFIX/$CHOST/sysroot"
 fi
 
 mkdir -p build
@@ -43,8 +43,6 @@ make install-strip
 
 mkdir prefix_strip
 mv $PREFIX/* prefix_strip/.
-
-export CHOST="${ctng_triplet}"
 
 # test that we are installing without prefix
 if [[ ! -f ${PREFIX}/bin/${CHOST}-addr2line ]]; then

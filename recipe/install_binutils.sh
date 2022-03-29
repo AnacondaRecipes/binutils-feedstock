@@ -1,8 +1,8 @@
 #/bin/bash
 
-# contains HOST binaries, and OLD_HOST binaries as links to HOST one
-# HOST/bin/tools point to /bin/HOST-tools
-# OLD_HOST/bin/tools point to /bin/HOST-tools
+# contains CHOST binaries, and OHOST binaries as links to CHOST one
+# HOST/bin/tools point to /bin/CHOST-tools
+# OHOST/bin/tools point to /bin/CHOST-tools
 set -x
 
 echo "install binutils ..."
@@ -13,10 +13,10 @@ if [[ "$target_platform" == osx-* ]]; then
   LDDEPS=""
 fi
 
-export HOST="${ctng_triplet}"
-export OLD_HOST="${ctng_triplet_old}"
+export CHOST="${ctng_triplet}"
+export OHOST="${ctng_triplet_old}"
 
-mkdir -p $PREFIX/$OLD_HOST/bin
+mkdir -p $PREFIX/$OHOST/bin
 
 cd build
 
@@ -24,11 +24,11 @@ cp -r prefix_strip/* $PREFIX/.
 
 # Remove hardlinks and replace them by softlinks
 for tool in addr2line ar c++filt elfedit ${LDDEPS} nm objcopy objdump ranlib readelf size strings strip; do
-  rm -rf $PREFIX/$HOST/bin/$tool || true
-  ln -s $PREFIX/bin/$HOST-$tool $PREFIX/$HOST/bin/$tool || true;
-  if [[ "${OLD_HOST}" != "${HOST}" ]]; then
-    ln -s $PREFIX/bin/$HOST-$tool $PREFIX/$OLD_HOST/bin/$tool || true;
-    ln -s $PREFIX/bin/$HOST-$tool $PREFIX/bin/$OLD_HOST-$tool || true;
+  rm -rf $PREFIX/$CHOST/bin/$tool || true
+  ln -s $PREFIX/bin/$CHOST-$tool $PREFIX/$CHOST/bin/$tool || true;
+  if [[ "${OHOST}" != "${CHOST}" ]]; then
+    ln -s $PREFIX/bin/$CHOST-$tool $PREFIX/$OHOST/bin/$tool || true;
+    ln -s $PREFIX/bin/$CHOST-$tool $PREFIX/bin/$OHOST-$tool || true;
   fi
 done
 
