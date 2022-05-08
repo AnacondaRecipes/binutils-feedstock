@@ -18,7 +18,8 @@ export OHOST="${ctng_triplet_old}"
 # on ppc we still use old sysroot ... therefore go with old name
 SHOST=$CHOST
 if [[ $target_platform == linux-ppc64le ]]; then
-  SHOST="${OHOST}"
+  # SHOST="${OHOST}"
+  SHOST="${CHOST}"
 fi
 
 DEFSYSROOT=""
@@ -32,6 +33,7 @@ cd build
   --enable-interwork --enable-ld=yes --enable-gold=yes --enable-plugins --disable-multilib \
   --disable-sim --disable-gdb --disable-nls --disable-werror --enable-default-pie \
   --enable-deterministic-archives --enable-64-bit-bfd \
+  --with-pkgversion="Anaconda binutils" \
   --target=$CHOST ${DEFSYSROOT}
 
 make
