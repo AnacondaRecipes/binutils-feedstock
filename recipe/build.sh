@@ -46,7 +46,7 @@ make install-strip
 mkdir prefix_strip
 mv $PREFIX/* prefix_strip/.
 
-for f in libasan libubsan libatomic libgcc libitm libusan libstdc++ libgomp; do
+for f in libasan iliblsan libubsan libtsan libatomic libgcc libitm libusan libstdc++ libgomp libquadmath; do
   rm -f prefix_strip/lib/$f* || true
 done
 
