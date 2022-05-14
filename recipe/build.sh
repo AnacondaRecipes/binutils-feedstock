@@ -46,6 +46,10 @@ make install-strip
 mkdir prefix_strip
 mv $PREFIX/* prefix_strip/.
 
+for f in libasan libubsan libatomic libgcc libitm libusan libstdc++ libgomp; do
+  rm -f prefix_strip/lib/$f* || true
+done
+
 # test that we are installing without prefix
 if [[ ! -f ${PREFIX}/bin/${CHOST}-addr2line ]]; then
   for tool in addr2line ar c++filt elfedit ld as dwp gprof ld.bfd ld.gold gold nm objcopy objdump ranlib readelf size strings strip; do
