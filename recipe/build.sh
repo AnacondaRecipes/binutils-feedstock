@@ -1,50 +1,62 @@
-#!/bin/bash
+#/bin/bash
 
-set -e
+echo "build binutils ..."
 
-#pushd ${BUILD_PREFIX}/bin
-#  for fn in "${BUILD}-"*; do
-#    new_fn=${fn//${BUILD}-/}
-#    echo "Creating symlink from ${fn} to ${new_fn}"
-#    ln -sf "${fn}" "${new_fn}"
-#    varname=$(basename "${new_fn}" | tr a-z A-Z | sed "s/+/X/g" | sed "s/\./_/g" | sed "s/-/_/g")
-#    echo "$varname $CC"
-#    printf -v "$varname" "$BUILD_PREFIX/bin/${new_fn}"
-#  done
-#popd
-
-# make sure version is just major-minor
-CTNG_VER=$(echo ${PKG_VERSION} | sed -nE 's/([0-9]+\.[0-9]+).*/\1/p')
-for file in ./crosstool_ng/packages/binutils/${CTNG_VER}/*.patch; do
-  patch -p1 < $file;
-done
-
-mkdir build
-cd build
-
-if [[ "$target_platform" == "osx-64" ]]; then
+if [[ $target_platform == osx-* ]]; then
   export CPPFLAGS="$CPPFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
   export CFLAGS="$CFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
   export CXXFLAGS="$CXXFLAGS -mmacosx-version-min=${MACOSX_DEPLOYMENT_TARGET}"
   export LDFLAGS="$LDFLAGS -Wl,-pie -Wl,-headerpad_max_install_names -Wl,-dead_strip_dylibs"
+  export CC=clang
+  export CXX=clang++
 fi
 export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
 
-export HOST="${ctng_cpu_arch}-conda-linux-gnu"
+export CHOST="${ctng_triplet}"
+export OHOST="${ctng_triplet_old}"
 
-../configure \
-  --prefix="$PREFIX" \
-  --target=$HOST \
-  --enable-ld=default \
-  --enable-gold=yes \
-  --enable-plugins \
-  --disable-multilib \
-  --disable-sim \
-  --disable-gdb \
-  --disable-nls \
-  --enable-default-pie \
-  --with-sysroot=$PREFIX/$HOST/sysroot \
+# on ppc we still use old sysroot ... therefore go with old name
+SHOST=$CHOST
+if [[ $target_platform == linux-ppc64le ]]; then
+  # SHOST="${OHOST}"
+  SHOST="${CHOST}"
+fi
 
-make -j${CPU_COUNT}
+DEFSYSROOT=""
+if [[ $target_platform == linux-* ]]; then
+  DEFSYSROOT="--with-sysroot=$PREFIX/$CHOST/sysroot"
+fi
 
-#exit 1
+mkdir -p build
+cd build
+../binutils/configure --prefix="${PREFIX}" \
+  --enable-interwork --enable-ld=yes --enable-gold=yes --enable-plugins --disable-multilib \
+  --disable-sim --disable-gdb --disable-nls --disable-werror --enable-default-pie \
+  --enable-deterministic-archives --enable-64-bit-bfd \
+  --with-pkgversion="Anaconda binutils" \
+  --target=$CHOST ${DEFSYSROOT}
+
+make
+
+# required to run and do until now unstaged builds
+make check || true
+
+make install-strip
+
+mkdir prefix_strip
+mv $PREFIX/* prefix_strip/.
+
+for f in libasan iliblsan libubsan libtsan libatomic libgcc libitm libusan libstdc++ libgomp libquadmath; do
+  rm -f prefix_strip/lib/$f* || true
+done
+
+# test that we are installing without prefix
+if [[ ! -f ${PREFIX}/bin/${CHOST}-addr2line ]]; then
+  for tool in addr2line ar c++filt elfedit ld as dwp gprof ld.bfd ld.gold gold nm objcopy objdump ranlib readelf size strings strip; do
+     echo "move ${tool} to ${CHOST}-${tool} ..."
+     # not all architectures provide all binaries ...
+     mv prefix_strip/bin/$tool prefix_strip/bin/$CHOST-$tool  || true
+  done
+fi
+
+echo "initial build done"

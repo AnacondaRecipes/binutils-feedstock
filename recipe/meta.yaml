@@ -1,38 +1,62 @@
-{% set name = "binutils" %}
-{% set version = "2.35.1" %}
-{% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor ~ "-linux-gnu-" %}
-{% set build_num = 9 %}
+{% set version = "2.38" %}
+{% set sha256 = "e316477a914f567eccc34d5d29785b8b0f5a10208d36bbacedcc39048ecfe024" %}
+{% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor_old ~ "-" ~ ctng_os ~ "-" %}
 
 package:
-  name: binutils_split
+  name: binutils_build
   version: {{ version }}
 
 source:
-  - url: https://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.bz2
-    sha256: 320e7a1d0f46fcd9f413f1046e216cbe23bb2bce6deb6c6a63304425e48b1942
-    folder: .
-
-  # Get the patches from crosstool-ng
-  - url: https://github.com/crosstool-ng/crosstool-ng/archive/e7da850fa2066c9f1adeba3d8525a7231d0e47bc.tar.gz
-    sha256: ba84dea3109b3fc1d8f7f12ffeade97ba58f62c628b61251db13cf918f55256b
-    folder: crosstool_ng
+  - url: https://ftp.gnu.org/gnu/binutils/binutils-{{ version }}.tar.xz
+    sha256: {{ sha256 }}
+    folder: binutils
+    patches:
+      - patches/binutils/0000-sh-conf.patch
+      - patches/binutils/0001-check_ldrunpath_length.patch
+      - patches/binutils/0002-MinGW-w64-winpthreads-doesnt-have-pthread_mutexattr_settype.patch
+      - patches/binutils/0003-Dont-link-to-libfl-as-its-unnecessary.patch
+      - patches/binutils/0004-Darwin-gold-binary-cc-include-string-not-cstring.patch
+      - patches/binutils/0005-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
+      - patches/binutils/0006-sysroot.patch
+      - patches/binutils/0007-poison-system-directories.patch
+      - patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
 
 build:
-  number: {{ build_num }}
-  skip: true  # [win]
+  number: 0
+  # binutils support on osx is not fully implemented
+  skip: true  # [not linux]
   detect_binary_files_with_prefix: false
 
 requirements:
   build:
-  host:
-  run:
-
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - bash  # [osx]
+    - autoconf
+    - automake
+    - texinfo
+    - bison
+    - flex
+    - gettext
+    - git
+    - help2man
+    - make
+    - texinfo
+    - unzip
+    - wget
+    - libtool
+    - flex
+    - bison
+    - ncurses
+    - patch  # [unix]
 outputs:
   - name: ld_impl_{{ ctng_target_platform }}
     script: install_ld.sh
     build:
       merge_build_host: false
       detect_binary_files_with_prefix: false
+      missing_dso_whitelist:
+        - '*'
     requirements:
       build:
       host:
@@ -41,7 +65,7 @@ outputs:
         - binutils_impl_{{ ctng_target_platform }} {{ version }}
     test:
       commands:
-        - {{ chost }}ld --help
+        - {{ chost }}ld --help  # [not osx]
         - echo "{{ ctng_vendor }}"
         - echo {{ c_compiler_version }}
 
@@ -52,27 +76,27 @@ outputs:
       detect_binary_files_with_prefix: false
       ignore_run_exports:
         - __glibc
+      missing_dso_whitelist:
+        - '*'
     requirements:
       build:
       host:
         - ld_impl_{{ ctng_target_platform }} {{ version }}
       run:
         - {{ pin_subpackage("ld_impl_" ~ ctng_target_platform, exact=True) }}
-        - sysroot_{{ ctng_target_platform }}
+        - sysroot_{{ ctng_target_platform }}  # [linux]
+        - libstdcxx-ng >=4.9  # [not (s390x or osx)]
     test:
-      downstreams:
-        - gfortran_impl_{{ ctng_target_platform }}
-        - gcc_impl_{{ ctng_target_platform }}
       commands:
         - {{ chost }}addr2line --help
         - {{ chost }}ar --help
-        - {{ chost }}as --help
+        - {{ chost }}as --help          # [not osx]
         - {{ chost }}c++filt --help
         - {{ chost }}elfedit --help
-        - {{ chost }}gprof --help
-        - {{ chost }}ld --help
-        - {{ chost }}ld.bfd --help
-        - {{ chost }}ld.gold --help     # [not s390x]
+        - {{ chost }}gprof --help       # [not osx]
+        - {{ chost }}ld --help          # [not osx]
+        - {{ chost }}ld.bfd --help      # [not osx]
+        - {{ chost }}ld.gold --help     # [not (s390x or osx)]
         - {{ chost }}nm --help
         - {{ chost }}objcopy --help
         - {{ chost }}objdump --help
@@ -88,7 +112,9 @@ outputs:
     build:
       merge_build_host: false
       detect_binary_files_with_prefix: false
-      skip: true  # [ctng_target_platform != target_platform]
+      missing_dso_whitelist:
+        - '*'
+
     requirements:
       build:
       host:
@@ -100,14 +126,14 @@ outputs:
       commands:
         - $PREFIX/bin/addr2line --help
         - $PREFIX/bin/ar --help
-        - $PREFIX/bin/as --help
+        - $PREFIX/bin/as --help         # [not osx]
         - $PREFIX/bin/c++filt --help
         - $PREFIX/bin/elfedit --help
-        - $PREFIX/bin/gold --help       # [not s390x]
-        - $PREFIX/bin/gprof --help
-        - $PREFIX/bin/ld --help
-        - $PREFIX/bin/ld.bfd --help
-        - $PREFIX/bin/ld.gold --help    # [not s390x]
+        - $PREFIX/bin/gold --help       # [not (s390x or osx)]
+        - $PREFIX/bin/gprof --help      # [not osx]
+        - $PREFIX/bin/ld --help         # [not osx]
+        - $PREFIX/bin/ld.bfd --help     # [not osx]
+        - $PREFIX/bin/ld.gold --help    # [not (s390x or osx)]
         - $PREFIX/bin/nm --help
         - $PREFIX/bin/objcopy --help
         - $PREFIX/bin/objdump --help
@@ -121,17 +147,15 @@ about:
   home: https://www.gnu.org/software/binutils/
   license: GPL-3.0-only
   license_file:
-    - COPYING
-    - COPYING.LIB
-    - COPYING3
-    - COPYING3.LIB
+    - binutils/COPYING
+    - binutils/COPYING.LIB
+    - binutils/COPYING3
+    - binutils/COPYING3.LIB
   summary: |
     A set of programming tools for creating and managing binary programs, object files,
     libraries, profile data, and assembly source code.
 
 extra:
   recipe-maintainers:
-    - frol
-    - isuruf
-    - jjhelmus
-    - beckermr
+    - katietz
+ 

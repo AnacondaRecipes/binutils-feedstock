@@ -1,17 +1,30 @@
-#!/bin/bash
+#/bin/bash
 
-set -e
+# set up ld specific symbolic links
+
+echo "install ld ..."
+
+set -ex
 
 cd build
 
-make DESTDIR=$PWD/install install-strip
+CHOST="${ctng_triplet}"
+OHOST="${ctng_triplet_old}"
 
-CHOST="${ctng_cpu_arch}-conda-linux-gnu"
-OLD_CHOST="${ctng_cpu_arch}-${ctng_vendor}-linux-gnu"
 mkdir -p $PREFIX/bin
-mkdir -p $PREFIX/$OLD_CHOST/bin
+mkdir -p $PREFIX/$OHOST/bin
 mkdir -p $PREFIX/$CHOST/bin
-cp $PWD/install/$PREFIX/bin/$CHOST-ld $PREFIX/bin/$CHOST-ld
-ln -s $PREFIX/bin/$CHOST-ld $PREFIX/bin/$OLD_CHOST-ld
-ln -s $PREFIX/bin/$CHOST-ld $PREFIX/$OLD_CHOST/bin/ld
-ln -s $PREFIX/bin/$CHOST-ld $PREFIX/$CHOST/bin/ld
+
+if [[ $target_platform == osx-* ]]; then
+  echo "no ld support ..."
+else
+  cp $PWD/prefix_strip/bin/$CHOST-ld $PREFIX/bin/$CHOST-ld
+  if [[ "${CHOST}" != "${OHOST}" ]]; then
+    ln -s $PREFIX/bin/$CHOST-ld $PREFIX/bin/$OHOST-ld
+    ln -s $PREFIX/bin/$CHOST-ld $PREFIX/$OHOST/bin/ld
+  fi
+  ln -s $PREFIX/bin/$CHOST-ld $PREFIX/$CHOST/bin/ld
+fi
+
+echo "ld installed"
+
