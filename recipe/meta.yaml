@@ -30,6 +30,7 @@ requirements:
     - bash  # [osx]
     - autoconf
     - automake
+    - make                         # [not win]
     - texinfo
     - bison
     - flex
