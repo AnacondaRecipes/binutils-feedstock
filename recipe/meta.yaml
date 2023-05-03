@@ -27,6 +27,24 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - bash  # [osx]
+    - autoconf
+    - automake
+    - texinfo
+    - bison
+    - flex
+    - gettext
+    - git
+    - help2man
+    - make
+    - texinfo
+    - unzip
+    - wget
+    - libtool
+    - flex
+    - bison
+    - ncurses
+    - patch  # [unix]
   host:
   run:
 
