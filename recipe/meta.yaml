@@ -56,6 +56,7 @@ outputs:
       detect_binary_files_with_prefix: false
     requirements:
       build:
+        - make
       host:
       run:
       run_constrained:
