@@ -19,7 +19,7 @@ source:
 
 build:
   number: {{ build_num }}
-  skip: true  # [win]
+  skip: true  # [not linux]
   detect_binary_files_with_prefix: false
 
 requirements:
@@ -57,6 +57,8 @@ outputs:
     requirements:
       build:
         - make
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
       host:
       run:
       run_constrained:
@@ -76,6 +78,9 @@ outputs:
         - __glibc
     requirements:
       build:
+        - make
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
       host:
         - ld_impl_{{ ctng_target_platform }} {{ version }}
       run:
