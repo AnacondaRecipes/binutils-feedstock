@@ -20,7 +20,6 @@ source:
 build:
   number: {{ build_num }}
   skip: true  # [win]
-  skip: true  # [not (linux and ppc64le)]
   detect_binary_files_with_prefix: false
 
 requirements:
