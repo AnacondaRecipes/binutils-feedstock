@@ -1,4 +1,4 @@
-{% set version = "2.43.1" %}
+{% set version = "2.40" %}
 {% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor_old ~ "-" ~ ctng_os ~ "-" %}
 
 package:
@@ -17,9 +17,9 @@ source:
       - patches/binutils/0004-Darwin-gold-binary-cc-include-string-not-cstring.patch
       - patches/binutils/0005-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
       - patches/binutils/0006-sysroot.patch
-      #- patches/binutils/0007-poison-system-directories.patch
-      #- patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
-     #- patches/binutils/0009-fix-align-kernel.patch
+      - patches/binutils/0007-poison-system-directories.patch
+      - patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
+      - patches/binutils/0009-fix-align-kernel.patch
 build:
   number: 0
   # binutils support on osx is not fully implemented
