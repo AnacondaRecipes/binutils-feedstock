@@ -18,7 +18,7 @@ source:
       - patches/binutils/0005-Darwin-Two-fixes-from-Android-NDK-PTHREAD_ONCE_INIT-wcsncasecmp.patch
       - patches/binutils/0006-sysroot.patch
       - patches/binutils/0007-poison-system-directories.patch
-      - patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
+      #- patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
       - patches/binutils/0009-fix-align-kernel.patch
 build:
   number: 0

@@ -1,6 +1,6 @@
-From bc4856725abb3f7bd50476d84691a5b07c167bf4 Mon Sep 17 00:00:00 2001
+From 8917d1d32a204870695bd08be979877254a791d0 Mon Sep 17 00:00:00 2001
 From: Serhii Kupriienko <skupriienko@anaconda.com>
-Date: Thu, 19 Sep 2024 13:40:09 +0300
+Date: Thu, 19 Sep 2024 13:51:31 +0300
 Subject: [PATCH] Resolve merge conflict
 
 ---
@@ -110,13 +110,14 @@ index 05649ff61b8..bb00ebec658 100644
       --force-group-allocation on the command line or FORCE_GROUP_ALLOCATION
       in the linker script.  */
 diff --git a/ld/ld.texi b/ld/ld.texi
-index db3a9f09b45..9dacc934f80 100644
+index db3a9f09b45..77037399cb9 100644
 --- a/ld/ld.texi
 +++ b/ld/ld.texi
-@@ -2949,6 +2949,18 @@ string identifying the original linked file does not change.
- Passing @code{none} for @var{style} disables the setting from any
- @code{--build-id} options earlier on the command line.
- 
+@@ -2960,6 +2960,18 @@ creation of the metadata note, if one had been enabled by an earlier
+ occurrence of the --package-metdata option.
+ If the linker has been built with libjansson, then the JSON string
+ will be validated.
++
 +@kindex --no-poison-system-directories
 +@item --no-poison-system-directories
 +Do not warn for @option{-L} options using system directories such as
@@ -128,10 +129,9 @@ index db3a9f09b45..9dacc934f80 100644
 +@item --error-poison-system-directories
 +Give an error instead of a warning for @option{-L} options using
 +system directories when cross linking.
-+
- @kindex --package-metadata=@var{JSON}
- @item --package-metadata=@var{JSON}
- Request the creation of a @code{.note.package} ELF note section.  The
+ @end table
+ 
+ @c man end
 diff --git a/ld/ldfile.c b/ld/ldfile.c
 index b8fd4e5d8e0..1f1d8e23bc9 100644
 --- a/ld/ldfile.c
@@ -161,18 +161,18 @@ index b8fd4e5d8e0..1f1d8e23bc9 100644
  
  /* Try to open a BFD for a lang_input_statement.  */
 diff --git a/ld/ldlex.h b/ld/ldlex.h
-index 0538f0a06a1..d1de3aec23d 100644
+index 0538f0a06a1..f94a71875d8 100644
 --- a/ld/ldlex.h
 +++ b/ld/ldlex.h
-@@ -166,6 +166,8 @@ enum option_values
-   OPTION_CTF_VARIABLES,
-   OPTION_NO_CTF_VARIABLES,
-   OPTION_CTF_SHARE_TYPES,
-+  OPTION_NO_POISON_SYSTEM_DIRECTORIES,
-+  OPTION_ERROR_POISON_SYSTEM_DIRECTORIES,
-   OPTION_WARN_EXECSTACK,
+@@ -170,6 +170,8 @@ enum option_values
    OPTION_NO_WARN_EXECSTACK,
    OPTION_WARN_RWX_SEGMENTS,
+   OPTION_NO_WARN_RWX_SEGMENTS,
++  OPTION_NO_POISON_SYSTEM_DIRECTORIES,
++  OPTION_ERROR_POISON_SYSTEM_DIRECTORIES,
+ };
+ 
+ /* The initial parser states.  */
 diff --git a/ld/ldmain.c b/ld/ldmain.c
 index 9290a189b0d..92e031a6091 100644
 --- a/ld/ldmain.c
