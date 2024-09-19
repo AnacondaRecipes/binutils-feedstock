@@ -1,8 +1,5 @@
-From 79dc6f27012c442cd4a18c2296eada39164f2ac9 Mon Sep 17 00:00:00 2001
-From: Serhii Kupriienko <skupriienko@anaconda.com>
-Date: Thu, 19 Sep 2024 14:20:09 +0300
-Subject: [PATCH] Resolve merge conflict
-
+Index: binutils-2.38/bfd/elf.c
+===================================================================
 ---
  bfd/elf.c | 18 +++++++++++++++---
  1 file changed, 15 insertions(+), 3 deletions(-)
