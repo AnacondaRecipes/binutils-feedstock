@@ -1,4 +1,4 @@
-{% set version = "2.38" %}
+{% set version = "2.43.1" %}
 {% set sha256 = "e316477a914f567eccc34d5d29785b8b0f5a10208d36bbacedcc39048ecfe024" %}
 {% set chost = ctng_cpu_arch ~ "-" ~ ctng_vendor_old ~ "-" ~ ctng_os ~ "-" %}
 
@@ -8,7 +8,7 @@ package:
 
 source:
   - url: https://ftp.gnu.org/gnu/binutils/binutils-{{ version }}.tar.xz
-    sha256: {{ sha256 }}
+    sha256: f8298eb153a4b37d112e945aa5cb2850040bcf26a3ea65b5a715c83afe05e48a
     folder: binutils
     patches:
       - patches/binutils/0000-sh-conf.patch
@@ -22,7 +22,7 @@ source:
       - patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
       - patches/binutils/0009-fix-align-kernel.patch
 build:
-  number: 1
+  number: 0
   # binutils support on osx is not fully implemented
   skip: true  # [not linux]
   detect_binary_files_with_prefix: false
@@ -145,6 +145,7 @@ outputs:
 
 about:
   home: https://www.gnu.org/software/binutils/
+  dev_url: https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git
   license: GPL-3.0-only
   license_file:
     - binutils/COPYING
@@ -158,4 +159,3 @@ about:
 extra:
   recipe-maintainers:
     - katietz
- 
