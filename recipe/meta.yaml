@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://ftp.gnu.org/gnu/binutils/binutils-{{ version }}.tar.xz
-    sha256: 13f74202a3c4c51118b797a39ea4200d3f6cfbe224da6d1d95bb938480132dfd
+    sha256: 0f8a4c272d7f17f369ded10a4aca28b8e304828e95526da482b0ccc4dfc9d8e1
     folder: binutils
     patches:
       - patches/binutils/0000-sh-conf.patch
