@@ -1,21 +1,25 @@
 Index: binutils-2.38/bfd/elf.c
 ===================================================================
---- binutils-2.38.orig/bfd/elf.c
-+++ binutils-2.38/bfd/elf.c
-@@ -5435,8 +5435,10 @@ assign_file_positions_for_load_sections
+---
+ bfd/elf.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/bfd/elf.c b/bfd/elf.c
+index a82a1dd60a6..6ae7fa57622 100644
+--- a/bfd/elf.c
++++ b/bfd/elf.c
+@@ -5433,6 +5433,8 @@ assign_file_positions_for_load_sections (bfd *abfd,
    Elf_Internal_Phdr *p;
    file_ptr off;  /* Octets.  */
    bfd_size_type maxpagesize;
 +  bfd_size_type commonpagesize;
-   bfd_size_type p_align;
-   bool p_align_p = false;
 +  bool p_align_commonpagesize_p = false;
    unsigned int alloc, actual;
    unsigned int i, j;
    struct elf_segment_map **sorted_seg_map;
-@@ -5523,12 +5525,19 @@ assign_file_positions_for_load_sections
+@@ -5518,12 +5520,19 @@ assign_file_positions_for_load_sections (bfd *abfd,
+ 	   elf_sort_segments);
  
-   p_align = bed->p_align;
    maxpagesize = 1;
 +  commonpagesize = 1;
    if ((abfd->flags & D_PAGED) != 0)
@@ -35,7 +39,7 @@ Index: binutils-2.38/bfd/elf.c
      }
  
    /* Sections must map to file offsets past the ELF file header.  */
-@@ -5600,7 +5609,7 @@ assign_file_positions_for_load_sections
+@@ -5599,7 +5608,7 @@ assign_file_positions_for_load_sections (bfd *abfd,
  	       largest section alignment.  The run-time loader can
  	       align segments to the default p_align value or the
  	       maximum page size, depending on system page size.  */
@@ -44,7 +48,7 @@ Index: binutils-2.38/bfd/elf.c
  
  	  p->p_align = maxpagesize;
  	}
-@@ -6035,6 +6044,9 @@ assign_file_positions_for_load_sections
+@@ -6035,6 +6044,9 @@ assign_file_positions_for_load_sections (bfd *abfd,
  
  	  if (p_align_p)
  	    p->p_align = p_align;
@@ -54,3 +58,6 @@ Index: binutils-2.38/bfd/elf.c
  	}
      }
  
+-- 
+2.45.2
+
