@@ -30,6 +30,7 @@ requirements:
   build:
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
+    - libstdcxx-ng {{ cxx_compiler_version }}
     - make
     - texinfo
     - bison
