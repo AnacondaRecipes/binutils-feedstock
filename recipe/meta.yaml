@@ -21,33 +21,18 @@ source:
       #- patches/binutils/0008-binutils-2.38-vs.-ppc32-linux-kernel.patch
       - patches/binutils/0009-fix-align-kernel.patch
 build:
-  number: 0
+  number: 1
   # binutils support on osx is not fully implemented
   skip: true  # [not linux]
   detect_binary_files_with_prefix: false
 
 requirements:
   build:
-    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
-    - bash  # [osx]
-    - autoconf
-    - automake
-    - texinfo
-    - bison
-    - flex
-    - gettext
-    - git
-    - help2man
     - make
     - texinfo
-    - unzip
-    - wget
-    - libtool
-    - flex
     - bison
-    - ncurses
-    - patch  # [unix]
 
 outputs:
   - name: ld_impl_{{ ctng_target_platform }}
