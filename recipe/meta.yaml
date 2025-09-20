@@ -48,6 +48,7 @@ requirements:
     - bison
     - ncurses
     - patch  # [unix]
+
 outputs:
   - name: ld_impl_{{ ctng_target_platform }}
     script: install_ld.sh
@@ -113,7 +114,6 @@ outputs:
       detect_binary_files_with_prefix: false
       missing_dso_whitelist:
         - '*'
-
     requirements:
       build:
       host:
