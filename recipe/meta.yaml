@@ -30,7 +30,8 @@ requirements:
   build:
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
-    - libstdcxx {{ cxx_compiler_version }}
+    - libstdcxx-ng {{ cxx_compiler_version }}
+    - libgcc-ng {{ cxx_compiler_version }}
     - make
     - texinfo
     - bison
@@ -71,7 +72,7 @@ outputs:
       run:
         - {{ pin_subpackage("ld_impl_" ~ ctng_target_platform, exact=True) }}
         - sysroot_{{ ctng_target_platform }}  # [linux]
-        - libstdcxx >=4.9  # [not (s390x or osx)]
+        - libstdcxx >=14.3.0  # [not (s390x or osx)]
     test:
       commands:
         - {{ chost }}addr2line --help
