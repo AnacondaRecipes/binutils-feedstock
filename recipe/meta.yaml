@@ -72,7 +72,6 @@ outputs:
       run:
         - {{ pin_subpackage("ld_impl_" ~ ctng_target_platform, exact=True) }}
         - sysroot_{{ ctng_target_platform }}  # [linux]
-        - libstdcxx >=14.3.0  # [not (s390x or osx)]
     test:
       commands:
         - {{ chost }}addr2line --help
