@@ -6,7 +6,9 @@ package:
   version: {{ version }}
 
 source:
-  - url: https://ftp.gnu.org/gnu/binutils/binutils-{{ version }}.tar.xz
+  - url:
+      - https://ftp.gnu.org/gnu/binutils/binutils-{{ version }}.tar.xz
+      - https://mirrors.ocf.berkeley.edu/gnu/binutils/binutils-{{ version }}.tar.xz
     sha256: 0f8a4c272d7f17f369ded10a4aca28b8e304828e95526da482b0ccc4dfc9d8e1
     folder: binutils
     patches:
