@@ -12,6 +12,10 @@ source:
     sha256: f66390a661faa117d00fab2e79cf2dc9d097b42cc296bf3f8677d1e7b452dc3a
     patches:
       - patches/0001-fallback-sysroot.diff
+      - patches/0001-check_ldrunpath_length.patch
+      - patches/0006-sysroot.patch
+      - patches/0007-poison-system-directories.patch
+      - patches/0009-fix-align-kernel.patch
 
 build:
   number: 2
@@ -22,9 +26,9 @@ requirements:
   build:
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
-    - make                    # [osx]
-    - texinfo                 # [osx]
-    - flex                    # [osx]
+    - make                    # [unix]
+    - texinfo                 # [unix]
+    - flex                    # [unix]
   host:
   run:
 
@@ -34,7 +38,7 @@ outputs:
     build:
       skip: true  # [cross_target_platform in ("osx-arm64", "osx-64")]
       merge_build_host: false
-      # ld binaries have host prefix search paths embeded in them
+      # ld binaries have host prefix search paths embedded in them
       detect_binary_files_with_prefix: true
       ignore_run_exports_from:   # [linux]
         - {{ compiler('cxx') }}   # [linux]
@@ -117,7 +121,7 @@ outputs:
     requirements:
       build:
       host:
-        - binutils_impl_{{ cross_target_platform }}
+        - binutils_impl_{{ cross_target_platform }} {{ version }}
       run:
         - {{ pin_subpackage("binutils_impl_" ~ cross_target_platform, max_pin="x.x.x") }}
     test:
@@ -141,17 +145,24 @@ outputs:
 
 about:
   home: https://www.gnu.org/software/binutils/
+  dev_url: https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git
+  doc_url: https://www.gnu.org/software/binutils/
   license: GPL-3.0-only
+  license_family: GPL
   license_file:
     - COPYING
     - COPYING.LIB
     - COPYING3
     - COPYING3.LIB
-  summary: |
+  summary: The GNU Binutils are a collection of binary tools.
+  description: |
     A set of programming tools for creating and managing binary programs, object files,
-    libraries, profile data, and assembly source code.
+    libraries, profile data, and assembly source code. The main ones are ld, as, and gold.
 
 extra:
+  skip-lints:
+    - stdlib_must_be_in_build
+    - invalid_url  # Main URL is a ftp connection.
   recipe-maintainers:
     - frol
     - isuruf
