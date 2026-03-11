@@ -18,7 +18,7 @@ source:
       - patches/0009-fix-align-kernel.patch
 
 build:
-  number: 2
+  number: 3
   skip: true  # [win64 and cross_target_platform != "win-64"]
   detect_binary_files_with_prefix: false
 
@@ -26,9 +26,9 @@ requirements:
   build:
     - {{ compiler('cxx') }}
     - {{ stdlib('c') }}
-    - make                    # [unix]
-    - texinfo                 # [unix]
-    - flex                    # [unix]
+    - make
+    - texinfo
+    - flex                    # [osx]
   host:
   run:
 
