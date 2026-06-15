@@ -1,19 +1,15 @@
 anaconda_config_version: 1
 upstream_sources:
-- webpage:
-    url: https://ftpmirror.gnu.org/binutils/
-    regex: binutils-([\d.]+)\.tar\.xz
-  packages:
-  - binutils
-  - binutils_impl_linux-64
-  - binutils_impl_linux-aarch64
-  - binutils_impl_osx-arm64
-  - binutils_impl_win-64
-  - binutils_linux-64
-  - binutils_linux-aarch64
-  - binutils_osx-arm64
-  - binutils_win-64
-  - ld_impl_linux-64
-  - ld_impl_linux-aarch64
-  - ld_impl_osx-arm64
-  - ld_impl_win-64
+  - webpage:
+      url: https://ftpmirror.gnu.org/binutils/
+      regex: binutils-([\d.]+)\.tar\.xz
+    packages:
+      - binutils
+      - binutils_impl_linux-64
+      - binutils_impl_linux-aarch64
+      - binutils_impl_osx-arm64
+      - binutils_linux-64
+      - binutils_linux-aarch64
+      - binutils_osx-arm64
+      - ld_impl_linux-64
+      - ld_impl_linux-aarch64
