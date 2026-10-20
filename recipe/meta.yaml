@@ -101,6 +101,7 @@ outputs:
         - {{ triplet }}-size --help
         - {{ triplet }}-strings --help
         - {{ triplet }}-strip --help
+        - {{ triplet }}-strip --version && [[ "$({{ triplet }}-strip --version | grep "Anaconda Binutils" | wc -l)" == "1" ]]
 
   - name: binutils_{{ cross_target_platform }}
     script: install_activation.sh

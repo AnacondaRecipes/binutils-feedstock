@@ -98,6 +98,7 @@ fi
   --disable-gprofng \
   --enable-default-pie \
   --with-sysroot=${TARGET_SYSROOT_DIR} \
+  --with-pkgversion="Anaconda Binutils" \
   || (cat config.log; false)
 
 
