@@ -83,25 +83,23 @@ outputs:
         - gfortran_impl_{{ cross_target_platform }}  # [cross_target_platform != "win-64"]
         - gcc_impl_{{ cross_target_platform }}       # [cross_target_platform != "win-64"]
       commands:
-        - {{ triplet }}-addr2line --help
-        - {{ triplet }}-ar --help
-        - {{ triplet }}-as --help                   # [cross_target_platform not in ("osx-arm64", "osx-64")]
-        - {{ triplet }}-c++filt --help
-        - {{ triplet }}-elfedit --help
-        - {{ triplet }}-gprof --help                # [cross_target_platform not in ("osx-arm64", "osx-64")]
-        - {{ triplet }}-ld --help                   # [cross_target_platform not in ("osx-arm64", "osx-64")]
         # Look here to check that search path prefixes have been replaced
         - {{ triplet }}-ld --verbose | grep SEARCH  # [cross_target_platform not in ("osx-arm64", "osx-64")]
-        - {{ triplet }}-ld.bfd --help               # [cross_target_platform not in ("osx-arm64", "osx-64")]
-        - {{ triplet }}-nm --help
-        - {{ triplet }}-objcopy --help
-        - {{ triplet }}-objdump --help
-        - {{ triplet }}-ranlib --help
-        - {{ triplet }}-readelf --help
-        - {{ triplet }}-size --help
-        - {{ triplet }}-strings --help
-        - {{ triplet }}-strip --help
-        - {{ triplet }}-strip --version && [[ "$({{ triplet }}-strip --version | grep "Anaconda Binutils" | wc -l)" == "1" ]]
+        - for tool in addr2line ar c++filt elfedit nm objcopy objdump ranlib readelf size strings strip; do ( # [unix]
+        -    {{ triplet }}-strings --help                                                                     # [unix]
+        -    {{ triplet }}-${tool} --version                                                                  # [unix]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                         # [unix]
+        - ) done                                                                                              # [unix]
+        - for tool in as gprof ld ld.bfd; do (                                                                # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-strings --help                                                                     # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-${tool} --version                                                                  # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                         # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        - ) done                                                                                              # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        - for %%t in (addr2line ar c++filt elfedit nm objcopy objdump ranlib readelf size strings strip as gprof ld ld.bfd) do ( # [win]
+        -     {{ triplet }}-%%t --help                                                                                           # [win]
+        -     {{ triplet }}-%%t --version                                                                                        # [win]
+        -     {{ triplet }}-%%t --version | findstr /L /C:"Anaconda Binutils" || exit /b 1                                       # [win]
+        - )                                                                                                                      # [win]
 
   - name: binutils_{{ cross_target_platform }}
     script: install_activation.sh
