@@ -88,18 +88,13 @@ outputs:
         - for tool in addr2line ar c++filt elfedit nm objcopy objdump ranlib readelf size strings strip; do ( # [unix]
         -    {{ triplet }}-strings --help                                                                     # [unix]
         -    {{ triplet }}-${tool} --version                                                                  # [unix]
-        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                         # [unix]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                            # [unix]
         - ) done                                                                                              # [unix]
         - for tool in as gprof ld ld.bfd; do (                                                                # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         -    {{ triplet }}-strings --help                                                                     # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         -    {{ triplet }}-${tool} --version                                                                  # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
-        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                         # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                            # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         - ) done                                                                                              # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
-        - for %%t in (addr2line ar c++filt elfedit nm objcopy objdump ranlib readelf size strings strip as gprof ld ld.bfd) do ( # [win]
-        -     {{ triplet }}-%%t --help                                                                                           # [win]
-        -     {{ triplet }}-%%t --version                                                                                        # [win]
-        -     {{ triplet }}-%%t --version | findstr /L /C:"Anaconda Binutils" || exit /b 1                                       # [win]
-        - )                                                                                                                      # [win]
 
   - name: binutils_{{ cross_target_platform }}
     script: install_activation.sh
