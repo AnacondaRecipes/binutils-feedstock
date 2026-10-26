@@ -87,13 +87,15 @@ outputs:
         - {{ triplet }}-ld --verbose | grep SEARCH  # [cross_target_platform not in ("osx-arm64", "osx-64")]
         - for tool in addr2line ar c++filt elfedit nm objcopy objdump ranlib readelf size strings strip; do ( # [unix]
         -    {{ triplet }}-${tool} --help                                                                     # [unix]
+        -    {{ triplet }}-${tool} --help | grep "https://www.anaconda.com/support" || exit 1;                # [unix]
         -    {{ triplet }}-${tool} --version                                                                  # [unix]
-        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                            # [unix]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda" || exit 1;                                     # [unix]
         - ) done                                                                                              # [unix]
         - for tool in as gprof ld ld.bfd; do (                                                                # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         -    {{ triplet }}-${tool} --help                                                                     # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-${tool} --help | grep "https://www.anaconda.com/support" || exit 1;                # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         -    {{ triplet }}-${tool} --version                                                                  # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
-        -    {{ triplet }}-${tool} --version | grep "Anaconda Binutils" || exit 1;                            # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
+        -    {{ triplet }}-${tool} --version | grep "Anaconda" || exit 1;                                     # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
         - ) done                                                                                              # [unix and cross_target_platform not in ("osx-arm64", "osx-64")]
 
   - name: binutils_{{ cross_target_platform }}
