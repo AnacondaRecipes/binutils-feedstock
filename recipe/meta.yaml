@@ -37,6 +37,7 @@ outputs:
     script: install_ld.sh
     build:
       skip: true  # [cross_target_platform in ("osx-arm64", "osx-64")]
+      string: {{ compiler_variant }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
       merge_build_host: false
       # ld binaries have host prefix search paths embedded in them
       detect_binary_files_with_prefix: true
@@ -60,6 +61,7 @@ outputs:
   - name: binutils_impl_{{ cross_target_platform }}
     script: install_binutils.sh
     build:
+      string: {{ compiler_variant }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
       merge_build_host: false
       detect_binary_files_with_prefix: false
       ignore_run_exports:
@@ -104,6 +106,8 @@ outputs:
 
   - name: binutils_{{ cross_target_platform }}
     script: install_activation.sh
+    build:
+      string: {{ compiler_variant }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
     requirements:
       run:
         - {{ pin_subpackage("binutils_impl_" ~ cross_target_platform, exact=True) }}
@@ -115,6 +119,7 @@ outputs:
   - name: binutils
     script: install_binutils_symlinks.sh
     build:
+      string: {{ compiler_variant }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
       merge_build_host: false
       detect_binary_files_with_prefix: false
       skip: true  # [cross_target_platform != target_platform]
